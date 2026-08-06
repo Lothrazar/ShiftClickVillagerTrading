@@ -1,10 +1,9 @@
 package com.lothrazar.shiftclickvillagertrading;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.MerchantScreen;
-import net.minecraft.world.inventory.ClickType;
+import net.minecraft.world.inventory.ContainerInput;
 import net.minecraft.world.inventory.MerchantMenu;
 import net.minecraft.world.inventory.Slot;
 import net.neoforged.api.distmarker.Dist;
@@ -31,10 +30,10 @@ public class ClientEvents {
     if (event.getButton() != 0) {
       return;
     }
-    if (!Screen.hasShiftDown()) {
+    Minecraft mc = Minecraft.getInstance();
+    if (!mc.hasShiftDown()) {
       return;
     }
-    Minecraft mc = Minecraft.getInstance();
     if (mc.player == null || mc.gameMode == null) {
       return;
     }
@@ -56,12 +55,12 @@ public class ClientEvents {
     event.setCanceled(true);
     int containerId = menu.containerId;
     // Pick up the stack from the player slot into cursor
-    mc.gameMode.handleInventoryMouseClick(containerId, slotIndex, 0, ClickType.PICKUP, mc.player);
+    mc.gameMode.handleContainerInput(containerId, slotIndex, 0, ContainerInput.PICKUP, mc.player);
     // Place cursor item into the left input slot
-    mc.gameMode.handleInventoryMouseClick(containerId, MERCHANT_LEFT_INPUT_SLOT, 0, ClickType.PICKUP, mc.player);
+    mc.gameMode.handleContainerInput(containerId, MERCHANT_LEFT_INPUT_SLOT, 0, ContainerInput.PICKUP, mc.player);
     // If cursor still holds items (left slot was full or had a partial merge), return them to the player slot
     if (!menu.getCarried().isEmpty()) {
-      mc.gameMode.handleInventoryMouseClick(containerId, slotIndex, 0, ClickType.PICKUP, mc.player);
+      mc.gameMode.handleContainerInput(containerId, slotIndex, 0, ContainerInput.PICKUP, mc.player);
     }
   }
 
