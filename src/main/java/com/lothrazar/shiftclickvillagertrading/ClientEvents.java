@@ -2,17 +2,16 @@ package com.lothrazar.shiftclickvillagertrading;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.Screen;
-import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.MerchantScreen;
 import net.minecraft.world.inventory.ClickType;
 import net.minecraft.world.inventory.MerchantMenu;
 import net.minecraft.world.inventory.Slot;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.ScreenEvent;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.client.event.ScreenEvent;
+import net.minecraftforge.eventbus.api.SubscribeEvent;
+import net.minecraftforge.fml.common.Mod;
 
-@EventBusSubscriber(modid = ModMain.MODID, value = Dist.CLIENT)
+@Mod.EventBusSubscriber(value = Dist.CLIENT)
 public class ClientEvents {
 
   // Merchant menu slot layout:
@@ -42,7 +41,7 @@ public class ClientEvents {
     if (!menu.getCarried().isEmpty()) {
       return;
     }
-    Slot hoveredSlot = findSlot(screen, event.getMouseX(), event.getMouseY());
+    Slot hoveredSlot = screen.getSlotUnderMouse();
     if (hoveredSlot == null) {
       return;
     }
@@ -63,18 +62,5 @@ public class ClientEvents {
     if (!menu.getCarried().isEmpty()) {
       mc.gameMode.handleInventoryMouseClick(containerId, slotIndex, 0, ClickType.PICKUP, mc.player);
     }
-  }
-
-  private static Slot findSlot(AbstractContainerScreen<?> screen, double mouseX, double mouseY) {
-    int leftPos = screen.leftPos;
-    int topPos = screen.topPos;
-    for (Slot slot : screen.getMenu().slots) {
-      double relX = mouseX - leftPos;
-      double relY = mouseY - topPos;
-      if (relX >= slot.x - 1 && relX < slot.x + 17 && relY >= slot.y - 1 && relY < slot.y + 17) {
-        return slot;
-      }
-    }
-    return null;
   }
 }
